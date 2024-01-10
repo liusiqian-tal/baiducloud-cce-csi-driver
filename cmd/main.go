@@ -65,6 +65,7 @@ func main() {
 			common.WithBosfsImage(options.BosfsImage),
 			common.WithTopologyMode(options.TopologyMode),
 			common.WithOverrideDriverName(options.OverrideDriverName),
+			common.WithNodeID(options.NodeID),
 		)
 		if err != nil {
 			glog.Errorf("Failed to init CSI driver, err: %v", err)

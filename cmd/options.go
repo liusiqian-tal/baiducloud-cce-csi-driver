@@ -63,6 +63,8 @@ var (
 	TopologyModeVar string
 
 	EnableOnlineExpansion bool
+
+	NodeIDVar string
 )
 
 type Options struct {
@@ -100,7 +102,7 @@ func init() {
 	flag.StringVar(&TopologyModeVar, "topology-mode", "auto", "Node topology provider mode. (optional)")
 	flag.StringVar(&OverrideDriverNameVar, "override-driver-name", "", "Override driver name. (optional)")
 	flag.StringVar(&OverrideDriverVersionVar, "override-driver-version", "", "Override driver version. (optional)")
-
+	flag.StringVar(&NodeIDVar, "node-id", "", "Node ID of the node where driver node server will run in. (optional)")
 	flag.BoolVar(&ShowVersionVar, "version", false, "Show CSI driver version.")
 	flag.BoolVar(&EnableOnlineExpansion, "enable-online-expansion", false, "Enable online volume expansion. Use it with caution as online expansion may lead to data corruption.")
 }
@@ -124,6 +126,7 @@ func ParseFlags() (*Options, error) {
 	options.MaxVolumesPerNode = MaxVolumesPerNodeVar
 	options.TopologyMode = common.TopologyMode(TopologyModeVar)
 	options.EnableOnlineExpansion = EnableOnlineExpansion
+	options.NodeID = NodeIDVar
 
 	switch DriverTypeVar {
 	case DriverTypeCDS:

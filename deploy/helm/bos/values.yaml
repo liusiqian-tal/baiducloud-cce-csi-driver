@@ -8,15 +8,15 @@ region:
 # images of components.
 image:
   registrar: registry.baidubce.com/cce-plugin-pro/csi-node-driver-registrar:v2.1.0
-  plugin: registry.baidubce.com/cce-plugin-pro/cce-csi-plugin:v1.2.0
+  plugin: hub.tal.com/tck-stack/csi-plugin:v1.2.0
   bosfs: registry.baidubce.com/cce-plugin-pro/bosfs:1.0.0.10
 
 # api endpoints of dependencies.
 endpoint:
-  bos: gz.bcebos.com
+  bos: bj.bcebos.com
 
-driverName: bos.csi.baidubce.com
-topologyMode: meta
+driverName: bos.csi.baidubce.comkubec
+topologyMode: k8s
 maxVolumesPerNode: 10
 logLevel: 5
 kubeletDataDirPath: /var/lib/kubelet

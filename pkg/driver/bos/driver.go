@@ -46,7 +46,7 @@ func NewDriver(setOptions ...func(*common.DriverOptions)) (*Driver, error) {
 	}
 
 	if options.Mode == common.DriverModeNode || options.Mode == common.DriverModeAll {
-		if options.NodeOptions.NodeID == "" || options.NodeOptions.Zone == "" {
+		if options.NodeOptions.NodeID == "" && options.NodeOptions.Zone == "" {
 			nodeID, zone, err := common.GetNodeTopology(context.Background(), options.TopologyMode)
 			if err != nil {
 				return nil, fmt.Errorf("failed to get nodeID or zone, err: %v", err)

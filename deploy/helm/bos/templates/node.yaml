@@ -43,6 +43,7 @@ spec:
             - "--override-driver-name={{ .Values.driverName }}"
             - "--driver-type=bos"
             - "--csi-endpoint=$(CSI_ENDPOINT)"
+            - "--node-id=$(NODE_NAME)"
             - "--driver-mode=node"
             - "--auth-mode=key"
             - "--max-volumes-per-node={{ .Values.maxVolumesPerNode }}"

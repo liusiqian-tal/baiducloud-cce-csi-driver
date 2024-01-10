@@ -18,6 +18,7 @@ package bos
 import (
 	"context"
 	"fmt"
+	"os/exec"
 	"path"
 	"strings"
 
@@ -223,7 +224,6 @@ func (server *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.Node
 	if targetPath == "" {
 		return nil, status.Errorf(codes.InvalidArgument, "[%s] empty unpublish target path", ctx.Value(util.TraceIDKey))
 	}
-
 	credentialsFileDirPath := path.Dir(getCredentialsFilePath(targetPath))
 	exist, err := server.mounter.PathExists(ctx, targetPath)
 	if err != nil {
@@ -234,6 +234,20 @@ func (server *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.Node
 		// 'Transport endpoint is not connected' means path exists and should be unmounted.
 		glog.V(4).Infof("[%s] Target path: %s transport endpoint is not connected", ctx.Value(util.TraceIDKey), targetPath)
 		exist = true
+	}
+	if !exist { // try to unmount
+		cmdMount := exec.Command("mount")
+		output, err := cmdMount.Output()
+		if err != nil {
+			glog.Errorf("[%s] Failed to get mount output, err: %v", ctx.Value(util.TraceIDKey), err)
+			return nil, status.Errorf(codes.Internal, "[%s] failed to get mount output, err: %v", ctx.Value(util.TraceIDKey), err)
+		}
+		if strings.Contains(string(output), targetPath) {
+			glog.V(4).Infof("[%s] Unmount target path: %s", ctx.Value(util.TraceIDKey), targetPath)
+			if err := server.mounter.UnmountFromBOSFS(ctx, targetPath); err != nil {
+				glog.Warningf("[%s] Failed to unmount from bosfs when not exist, target path: %s, err: %v", ctx.Value(util.TraceIDKey), targetPath, err)
+			}
+		}
 	}
 
 	// Target path exists, unmount and remove it.
